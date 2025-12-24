@@ -1,0 +1,61 @@
+{% if section.settings.product != blank %}
+  <div class="page-width">
+    <div class="page-container">
+      <div class="page-wrapper">
+        <div class="add__cart-section">
+          <div class="add__cart-media">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% else %}
+    {% render 'section-error' %}
+{% endif %}
+{% schema %}
+{
+  "name": "Add Cart Section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select the Product"
+    },
+    {
+      "type": "range",
+      "id": "padding-bottom",
+      "label": "Section Bottom Padding",
+      "max": 100,
+      "min": 0,
+      "default": 0,
+      "step": 1
+    },
+    {
+      "type": "range",
+      "id": "padding-top",
+      "label": "Section Top Padding",
+      "max": 100,
+      "min": 0,
+      "default": 0,
+      "step": 1
+    },
+    {
+      "type": "text",
+      "id": "product_news",
+      "label": "Product News",
+      "default": "25% OFF ALL PHOTOGRAPHY"
+    },
+    {
+      "type": "text",
+      "id": "Cart_button_title",
+      "label": "Cart Button Title"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Add Cart Section"
+    }
+  ]
+}
+{% endschema %}

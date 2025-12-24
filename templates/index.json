@@ -1,276 +1,75 @@
 {
   "sections": {
-    "product_info_EcUkmt": {
-      "type": "product-info",
-      "name": "Product Information",
-      "settings": {
-        "featured_product": "frame-mattress-bundle",
-        "star": "shopify:\/\/shop_images\/STARS.png",
-        "arrow": "shopify:\/\/shop_images\/Vector_109.png",
-        "included_img": "shopify:\/\/shop_images\/Frame_2752.png",
-        "price_check": "shopify:\/\/shop_images\/image_9.png",
-        "prick_check_mark": "shopify:\/\/shop_images\/image_8.png"
-      }
-    },
-    "custom_image_with_text_JdF8Jk": {
-      "type": "custom-image-with-text",
+    "image_banner": {
+      "type": "image-banner",
       "blocks": {
-        "image_with_text_block_AKHeyH": {
-          "type": "image_with_text_block",
+        "heading": {
+          "type": "heading",
           "settings": {
-            "image": "shopify:\/\/shop_images\/0cda93b8f5d37c32a6048b3aa458dbd001542be3.jpg",
-            "title": "Lorem ipsum dolor",
-            "description": "<p>Lorem ipsum dolor sit amet consectetur. Nullam erat quam quam diam odio sit. Egestas rhoncus at platea sed tellus sem dui eget egestas. Diam mattis dui tincidunt egestas magna suspendisse. Volutpat purus integer aenean eu aliquet. Arcu gravida dignissim nec pharetra non lorem dignissim lorem. Diam nam maecenas consectetur consectetur.<\/p>",
-            "on_right": false
+            "heading": "Browse our latest products",
+            "heading_size": "h0"
           }
         },
-        "image_with_text_block_FrQJbm": {
-          "type": "image_with_text_block",
+        "button": {
+          "type": "buttons",
           "settings": {
-            "image": "shopify:\/\/shop_images\/0cda93b8f5d37c32a6048b3aa458dbd001542be3.jpg",
-            "title": "Lorem ipsum dolor",
-            "description": "<p>Lorem ipsum dolor sit amet consectetur. Nullam erat quam quam diam odio sit. Egestas rhoncus at platea sed tellus sem dui eget egestas. Diam mattis dui tincidunt egestas magna suspendisse. Volutpat purus integer aenean eu aliquet. Arcu gravida dignissim nec pharetra non lorem dignissim lorem. Diam nam maecenas consectetur consectetur.<\/p>",
-            "on_right": true
-          }
-        },
-        "image_with_text_block_33Y4H4": {
-          "type": "image_with_text_block",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/0cda93b8f5d37c32a6048b3aa458dbd001542be3.jpg",
-            "title": "Lorem ipsum dolor",
-            "description": "<p>Lorem ipsum dolor sit amet consectetur. Nullam erat quam quam diam odio sit. Egestas rhoncus at platea sed tellus sem dui eget egestas. Diam mattis dui tincidunt egestas magna suspendisse. Volutpat purus integer aenean eu aliquet. Arcu gravida dignissim nec pharetra non lorem dignissim lorem. Diam nam maecenas consectetur consectetur.<br\/><br\/><\/p>",
-            "on_right": false
-          }
-        },
-        "image_with_text_block_dziign": {
-          "type": "image_with_text_block",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/0cda93b8f5d37c32a6048b3aa458dbd001542be3.jpg",
-            "title": "Lorem ipsum dolor",
-            "description": "<p>Lorem ipsum dolor sit amet consectetur. Nullam erat quam quam diam odio sit. Egestas rhoncus at platea sed tellus sem dui eget egestas. Diam mattis dui tincidunt egestas magna suspendisse. Volutpat purus integer aenean eu aliquet. Arcu gravida dignissim nec pharetra non lorem dignissim lorem. Diam nam maecenas consectetur consectetur.<br\/><br\/><\/p>",
-            "on_right": true
-          }
-        },
-        "image_with_text_block_6KAJVH": {
-          "type": "image_with_text_block",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/0cda93b8f5d37c32a6048b3aa458dbd001542be3.jpg",
-            "title": "Lorem ipsum dolor",
-            "description": "<p>Lorem ipsum dolor sit amet consectetur. Nullam erat quam quam diam odio sit. Egestas rhoncus at platea sed tellus sem dui eget egestas. Diam mattis dui tincidunt egestas magna suspendisse. Volutpat purus integer aenean eu aliquet. Arcu gravida dignissim nec pharetra non lorem dignissim lorem. Diam nam maecenas consectetur consectetur.<\/p>",
-            "on_right": false
+            "button_label_1": "Shop all",
+            "button_link_1": "shopify:\/\/collections\/all",
+            "button_style_secondary_1": true,
+            "button_label_2": "",
+            "button_link_2": "",
+            "button_style_secondary_2": false
           }
         }
       },
       "block_order": [
-        "image_with_text_block_AKHeyH",
-        "image_with_text_block_FrQJbm",
-        "image_with_text_block_33Y4H4",
-        "image_with_text_block_dziign",
-        "image_with_text_block_6KAJVH"
+        "heading",
+        "button"
       ],
-      "name": "Custom Image with Text",
       "settings": {
-        "section_title": "Lorem ipsum dolor sit amet consectetur. Arcu platea ut morbi viverra sed.",
-        "show_num": true
+        "image_overlay_opacity": 40,
+        "image_height": "large",
+        "image_behavior": "none",
+        "desktop_content_position": "bottom-center",
+        "desktop_content_alignment": "center",
+        "show_text_box": false,
+        "color_scheme": "scheme-3",
+        "stack_images_on_mobile": false,
+        "mobile_content_alignment": "center",
+        "show_text_below": false
       }
     },
-    "trusted_reviews_RM4KPX": {
-      "type": "trusted-reviews",
-      "blocks": {
-        "card_Nmj6BW": {
-          "type": "Card",
-          "settings": {
-            "review_star": "shopify:\/\/shop_images\/STARS.png",
-            "review_text": "The cooling technology is a game-changer—I no longer wake up sweating in the middle of the night.",
-            "reviewer": "Tom Miller",
-            "reviewed_media": "shopify:\/\/shop_images\/Vector_1.png"
-          }
-        },
-        "card_gKEGKc": {
-          "type": "Card",
-          "settings": {
-            "review_star": "shopify:\/\/shop_images\/STARS.png",
-            "review_text": "The cooling technology is a game-changer—I no longer wake up sweating in the middle of the night.",
-            "reviewer": "Tom Miller",
-            "reviewed_media": "shopify:\/\/shop_images\/Vector_1.png"
-          }
-        },
-        "card_jFrMCT": {
-          "type": "Card",
-          "settings": {
-            "review_star": "shopify:\/\/shop_images\/STARS.png",
-            "review_text": "The cooling technology is a game-changer—I no longer wake up sweating in the middle of the night.",
-            "reviewer": "Tom Miller",
-            "reviewed_media": "shopify:\/\/shop_images\/Vector_1.png"
-          }
-        }
-      },
-      "block_order": [
-        "card_Nmj6BW",
-        "card_gKEGKc",
-        "card_jFrMCT"
-      ],
-      "name": "Custom Reviewed Product",
+    "featured_collection": {
+      "type": "featured-collection",
       "settings": {
-        "section_title": "Thousands of trusted reviews\u2028from extraordinary people like you",
-        "title_btn": "View More",
-        "show_num": true
-      }
-    },
-    "product_difference_G4bqeM": {
-      "type": "product-difference",
-      "name": "Product Difference",
-      "settings": {
-        "section_title": "The glacier° difference"
-      }
-    },
-    "custom_faq_N6FTqA": {
-      "type": "custom_faq",
-      "blocks": {
-        "faq_block_PWcPwg": {
-          "type": "faq_block",
-          "settings": {
-            "accordion_title": "FAQ Question",
-            "accordion_content": "<p>FAQ answer goes here.<\/p>"
-          }
-        },
-        "faq_block_H8VkDM": {
-          "type": "faq_block",
-          "settings": {
-            "accordion_title": "FAQ Question",
-            "accordion_content": "<p>FAQ answer goes here.<\/p>"
-          }
-        },
-        "faq_block_DzwfrL": {
-          "type": "faq_block",
-          "settings": {
-            "accordion_title": "FAQ Question",
-            "accordion_content": "<p>FAQ answer goes here.<\/p>"
-          }
-        },
-        "faq_block_Mn4nLM": {
-          "type": "faq_block",
-          "settings": {
-            "accordion_title": "FAQ Question",
-            "accordion_content": "<p>FAQ answer goes here.<\/p>"
-          }
-        }
-      },
-      "block_order": [
-        "faq_block_PWcPwg",
-        "faq_block_H8VkDM",
-        "faq_block_DzwfrL",
-        "faq_block_Mn4nLM"
-      ],
-      "name": "Custom FAQ",
-      "settings": {
-        "section_title": "FAQ's",
-        "image": "shopify:\/\/shop_images\/0cda93b8f5d37c32a6048b3aa458dbd001542be3.jpg"
-      }
-    },
-    "custom_collection_list_Udt7ww": {
-      "type": "custom-collection-list",
-      "blocks": {
-        "image_mFwJ8H": {
-          "type": "Image",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/business-pug-working-on-laptop.jpg"
-          }
-        },
-        "image_69FaEp": {
-          "type": "Image",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/espresso-machine-with-dark-wood-handles.jpg"
-          }
-        },
-        "image_3j6Eq3": {
-          "type": "Image",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/Screenshot_2025-12-07_104749.png"
-          }
-        },
-        "image_fCfybX": {
-          "type": "Image",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/p1.jpg"
-          }
-        },
-        "image_E9RE7D": {
-          "type": "Image",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/beach-sunset-thailand.jpg"
-          }
-        },
-        "image_dJABQH": {
-          "type": "Image",
-          "settings": {
-            "image": "shopify:\/\/shop_images\/purple-t-shirt.jpg"
-          }
-        }
-      },
-      "block_order": [
-        "image_mFwJ8H",
-        "image_69FaEp",
-        "image_3j6Eq3",
-        "image_fCfybX",
-        "image_E9RE7D",
-        "image_dJABQH"
-      ],
-      "name": "custom collection",
-      "settings": {
-        "section_title": "Follow us and #ChillWithGlacier",
-        "button_text": "Follow on Instagram"
-      }
-    },
-    "custom_consult_Nciykz": {
-      "type": "custom-consult",
-      "blocks": {
-        "card_zgMgxP": {
-          "type": "Card",
-          "settings": {
-            "consult_icon": "shopify:\/\/shop_images\/chat-circle-dots-duotone_1.png",
-            "consult_title": "Chat with us",
-            "consult_content": "Live chat with Glacier Gurus.",
-            "button_text": "Lorem ipsum"
-          }
-        },
-        "card_dzwfhB": {
-          "type": "Card",
-          "settings": {
-            "consult_icon": "shopify:\/\/shop_images\/envelope-duotone_1.png",
-            "consult_title": "Email us",
-            "consult_content": "Drop Us an Ice-Cold Line.",
-            "button_text": "Lorem ipsum"
-          }
-        },
-        "card_HY3HfD": {
-          "type": "Card",
-          "settings": {
-            "consult_icon": "shopify:\/\/shop_images\/phone-call-duotone_1.png",
-            "consult_title": "Call us",
-            "consult_content": "Phone in for Chill Advice",
-            "button_text": "Lorem ipsum"
-          }
-        }
-      },
-      "block_order": [
-        "card_zgMgxP",
-        "card_dzwfhB",
-        "card_HY3HfD"
-      ],
-      "name": "Custom Consult",
-      "settings": {
-        "section_title": "Consult Our Sleep Experts"
+        "collection": "frontpage",
+        "products_to_show": 8,
+        "title": "iohuh",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 4,
+        "enable_desktop_slider": false,
+        "full_width": false,
+        "show_view_all": true,
+        "view_all_style": "solid",
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": false,
+        "padding_top": 44,
+        "padding_bottom": 36
       }
     }
   },
   "order": [
-    "product_info_EcUkmt",
-    "custom_image_with_text_JdF8Jk",
-    "trusted_reviews_RM4KPX",
-    "product_difference_G4bqeM",
-    "custom_faq_N6FTqA",
-    "custom_collection_list_Udt7ww",
-    "custom_consult_Nciykz"
+    "image_banner",
+    "featured_collection"
   ]
 }

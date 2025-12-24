@@ -2,16 +2,8 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "custom_footer_7eqV96": {
-      "type": "custom-footer",
-      "name": "Custom Footer",
-      "settings": {
-        "bt_color": "#27282f"
-      }
-    },
     "footer": {
       "type": "footer",
-      "disabled": true,
       "settings": {
         "color_scheme": "scheme-1",
         "newsletter_enable": true,
@@ -29,7 +21,6 @@
     }
   },
   "order": [
-    "custom_footer_7eqV96",
     "footer"
   ]
 }

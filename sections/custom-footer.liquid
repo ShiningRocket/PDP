@@ -1,0 +1,209 @@
+{% comment %}
+  Footer section – matches provided design
+{% endcomment %}
+
+<footer class="site-footer">
+  <div class="custom_featured-product--wrapper custom-section-structure">
+    <div class="footer-inner">
+      <div class="footer-links">
+        {% for i in (1..4) %}
+          <div class="footer-col">
+            <h4>SHOP</h4>
+            <ul>
+              <li><a href="#">Lorem ipsum</a></li>
+              <li><a href="#">Lorem ipsum</a></li>
+              <li><a href="#">Lorem ipsum</a></li>
+              <li><a href="#">Lorem ipsum</a></li>
+            </ul>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="footer-newsletter">
+        <h3>Chill Out with Cool Updates and Hot Promotions.</h3>
+        <form method="post" action="/contact#contact_form" class="newsletter-form">
+          <input type="email" name="contact[email]" placeholder="Email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© Glacier Mattress {{ 'now' | date: '%Y' }}</p>
+      <p class="footer-legal">
+        <a href="/policies/terms-of-service">Terms & Conditions</a> |
+        <a href="/policies/privacy-policy">Privacy Policy</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: #262a30;
+    color: #fff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 80px;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 60px;
+  }
+
+  .footer-col h4 {
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-col li {
+    margin-bottom: 14px;
+  }
+
+  .footer-col a {
+    color: #d1d5db;
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .footer-col a:hover {
+    color: #fff;
+  }
+
+  .footer-newsletter {
+    max-width: 420px;
+  }
+
+  .footer-newsletter h3 {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    color: #fff;
+  }
+
+  .newsletter-form {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .newsletter-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #4b5563;
+    padding: 10px 4px;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  .newsletter-form input::placeholder {
+    color: #9ca3af;
+  }
+
+  .newsletter-form input:focus {
+    outline: none;
+  }
+
+  .newsletter-form button {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .footer-bottom {
+    width: 100%;
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #d1d5db;
+  }
+
+  .footer-legal a {
+    color: #d1d5db;
+    text-decoration: none;
+  }
+
+  .footer-legal a:hover {
+    color: #fff;
+  }
+
+  @media (max-width: 1024px) {
+    .footer-inner {
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .footer-links {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .site-footer {
+      padding: 40px 24px 20px;
+    }
+
+    .footer-links {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Footer",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bt_color",
+      "label": "Background Color",
+      "default": "#27282F"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "menu",
+      "settings": [
+        {
+          "type": "link_list",
+          "id": "footer_list_list",
+          "label": "Select the link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Footer"
+    }
+  ]
+}
+
+{% endschema %}

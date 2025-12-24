@@ -1,0 +1,378 @@
+{% if section.settings != blank %}
+  <div class="custom_featured-product--wrapper custom-section-structure">
+    {% if section.settings.section_title %}
+      <div class="reviewed_product-title">
+        <h2 class="custom-section-title">{{ section.settings.section_title }}</h2>
+        {% if section.settings.button_text %}
+          <button class="custom-section-button">{{ section.settings.button_text }}</button>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  {% if section.blocks != blank %}
+    <div class="custom_collection-slider">
+      <div class="custom_collection-slider-container" id="slider-{{ section.id }}">
+        {% for item in section.blocks %}
+          <div class="custom_collection-slide">
+            <img
+              src="{{ item.settings.image | image_url: width: 800 }}"
+              alt="{{ item.settings.image.alt | escape }}"
+              loading="lazy"
+              width="800"
+              height="600"
+              class="custom_collection-image"
+            >
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+
+<style>
+  .custom_collection-slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 20px;
+  }
+
+  .custom_collection-slider-container {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    width: calc({{ section.blocks.size | divided_by: 4.0 | ceil }} * 100%);
+    user-select: none;
+    cursor: grab;
+  }
+
+  .custom_collection-slider-container.grabbing {
+    cursor: grabbing;
+    transition: none;
+  }
+
+  .custom_collection-slide {
+    flex: 0 0 25%; /* 4 images per view = 25% each */
+    max-width: 430.5px;
+    max-height: 430.5px;
+    box-sizing: border-box;
+    transition: opacity 0.3s ease;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .custom_collection-image {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  .custom_collection-slider-container:not(.grabbing) .custom_collection-image:hover {
+    transform: scale(1.05);
+  }
+
+  .reviewed_product-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 1200px) {
+    .custom_collection-slide {
+      flex: 0 0 33.333%; /* 3 images per view on medium screens */
+      width: 33.333%;
+    }
+
+    .custom_collection-slider-container {
+      width: calc({{ section.blocks.size | divided_by: 3.0 | ceil }} * 100%);
+    }
+  }
+
+  @media (max-width: 992px) {
+    .custom_collection-slide {
+      flex: 0 0 50%; /* 2 images per view on tablets */
+      width: 50%;
+    }
+
+    .custom_collection-slider-container {
+      width: calc({{ section.blocks.size | divided_by: 2.0 | ceil }} * 100%);
+    }
+
+    .custom_collection-image {
+      height: 250px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .custom_collection-slide {
+      flex: 0 0 100%; /* 1 image per view on mobile */
+      width: 100%;
+      padding: 0 5px;
+    }
+
+    .custom_collection-slider-container {
+      width: calc({{ section.blocks.size | divided_by: 1.0 | ceil }} * 100%);
+    }
+
+    .custom_collection-image {
+      height: 200px;
+    }
+
+    .reviewed_product-title {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .custom-section-button {
+      align-self: flex-start;
+    }
+    
+    .custom_collection-slider-container {
+      cursor: default;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const sliderContainers = document.querySelectorAll('.custom_collection-slider');
+
+    sliderContainers.forEach((slider) => {
+      const container = slider.querySelector('.custom_collection-slider-container');
+      const slides = slider.querySelectorAll('.custom_collection-slide');
+
+      if (!container) return;
+
+      // Calculate items per view based on screen size
+      function getItemsPerView() {
+        if (window.innerWidth < 768) return 1;
+        if (window.innerWidth < 992) return 2;
+        if (window.innerWidth < 1200) return 3;
+        return 4;
+      }
+
+      let itemsPerView = getItemsPerView();
+      let currentSlide = 0;
+      let isDragging = false;
+      let startPosition = 0;
+      let currentTranslate = 0;
+      let prevTranslate = 0;
+      let animationID = 0;
+      let isMouseDown = false;
+      const totalSlides = Math.ceil(slides.length / itemsPerView);
+
+      function updateSlider() {
+        // Calculate translation percentage
+        const translateX = currentSlide * (100 / totalSlides);
+        container.style.transform = `translateX(-${translateX}%)`;
+      }
+
+      // Next slide function
+      function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+          currentSlide++;
+          updateSlider();
+        }
+      }
+
+      // Previous slide function
+      function prevSlide() {
+        if (currentSlide > 0) {
+          currentSlide--;
+          updateSlider();
+        }
+      }
+
+      // Mouse drag functionality
+      function getPositionX(event) {
+        return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+      }
+
+      function setSliderPosition() {
+        container.style.transform = `translateX(${currentTranslate}px)`;
+      }
+
+      function animation() {
+        setSliderPosition();
+        if (isDragging) requestAnimationFrame(animation);
+      }
+
+      function dragStart(event) {
+        if (event.type === 'touchstart' && event.touches.length > 1) return;
+        
+        isDragging = true;
+        startPosition = getPositionX(event);
+        
+        if (event.type === 'mousedown') {
+          isMouseDown = true;
+          event.preventDefault();
+        }
+        
+        animationID = requestAnimationFrame(animation);
+        container.classList.add('grabbing');
+      }
+
+      function drag(event) {
+        if (!isDragging) return;
+        
+        const currentPosition = getPositionX(event);
+        const diff = currentPosition - startPosition;
+        
+        // Calculate slide width based on container width
+        const slideWidth = container.clientWidth / totalSlides;
+        const maxDragDistance = slideWidth * 0.5; // Limit drag to 50% of slide width
+        
+        // Apply resistance when dragging beyond limits
+        let resistance = 1;
+        if (currentSlide === 0 && diff > 0) {
+          resistance = 0.5; // Reduce dragging when at first slide and dragging right
+        } else if (currentSlide === totalSlides - 1 && diff < 0) {
+          resistance = 0.5; // Reduce dragging when at last slide and dragging left
+        }
+        
+        currentTranslate = prevTranslate + (diff * resistance);
+        
+        // Limit dragging boundaries with rubber band effect
+        const maxTranslate = maxDragDistance;
+        const minTranslate = -(slideWidth * (totalSlides - 1)) - maxDragDistance;
+        
+        if (currentTranslate > maxTranslate) {
+          currentTranslate = maxTranslate;
+        }
+        
+        if (currentTranslate < minTranslate) {
+          currentTranslate = minTranslate;
+        }
+      }
+
+      function dragEnd() {
+        if (!isDragging) return;
+        
+        isDragging = false;
+        cancelAnimationFrame(animationID);
+        container.classList.remove('grabbing');
+        
+        if (isMouseDown) {
+          isMouseDown = false;
+        }
+        
+        const movedBy = currentTranslate - prevTranslate;
+        const slideWidth = container.clientWidth / totalSlides;
+        
+        // Determine if slide should change based on drag distance
+        const threshold = slideWidth * 0.15; // 15% threshold
+        
+        if (Math.abs(movedBy) > threshold) {
+          if (movedBy < 0 && currentSlide < totalSlides - 1) {
+            currentSlide += 1;
+          } else if (movedBy > 0 && currentSlide > 0) {
+            currentSlide -= 1;
+          }
+        }
+        
+        // Animate back to current slide position
+        prevTranslate = -currentSlide * slideWidth;
+        currentTranslate = prevTranslate;
+        container.style.transition = 'transform 0.3s ease-out';
+        setSliderPosition();
+        
+        setTimeout(() => {
+          container.style.transition = 'transform 0.5s ease-in-out';
+          updateSlider();
+        }, 300);
+      }
+
+      // Mouse event listeners
+      container.addEventListener('mousedown', dragStart);
+      container.addEventListener('touchstart', dragStart);
+      
+      window.addEventListener('mousemove', (event) => {
+        if (isMouseDown) drag(event);
+      });
+      window.addEventListener('touchmove', drag);
+      
+      window.addEventListener('mouseup', dragEnd);
+      window.addEventListener('touchend', dragEnd);
+      window.addEventListener('mouseleave', () => {
+        if (isMouseDown) dragEnd();
+      });
+
+      // Prevent image drag (which interferes with slider)
+      const images = container.querySelectorAll('img');
+      images.forEach(img => {
+        img.addEventListener('dragstart', (e) => e.preventDefault());
+      });
+
+      // Handle window resize
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          itemsPerView = getItemsPerView();
+          const newTotalSlides = Math.ceil(slides.length / itemsPerView);
+          
+          // Adjust currentSlide if it's out of bounds after resize
+          if (currentSlide >= newTotalSlides) {
+            currentSlide = newTotalSlides - 1;
+          }
+          
+          // Reset dragging
+          isDragging = false;
+          isMouseDown = false;
+          container.classList.remove('grabbing');
+          
+          updateSlider();
+        }, 250);
+      });
+
+      // Initialize
+      updateSlider();
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Custom Collection Slider",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Featured Collection"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "View All"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "Image",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Slide Image",
+          "info": "Recommended size: 800x600px (4:3 ratio)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Collection Slider",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

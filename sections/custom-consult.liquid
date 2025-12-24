@@ -1,0 +1,74 @@
+{% if section.settings != blank %}
+  <div class="custom_featured-product--wrapper custom-section-structure">
+    <h2 class="custom-section-title">{{ section.settings.section_title }}</h2>
+    {% if section.blocks != blank %}
+      <div class="custom_consult-wrapper">
+        {% for item in section.blocks %}
+          <div class="custom_consult-card">
+            <div class="custom_consult-icon">
+              <img src="{{item.settings.consult_icon |  image_url: width: 1000 }}" width="" height="" alt="">
+            </div>
+            <div class="custom_consult-card-info">
+              <h4 class="custom_consult-title">
+                {{ item.settings.consult_title }}
+              </h4>
+              <p class="custom_consult-content">
+                {{ item.settings.consult_content }}
+              </p>
+              <div class="custom_consult-button">
+                <button>{{ item.settings.button_text }}</button>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Custom Consult",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title",
+      "default": "Consult Our Sleep Experts"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "Card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "consult_icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "consult_title",
+          "label": "Consult Title"
+        },
+        {
+          "type": "text",
+          "id": "consult_content",
+          "label": "Consult Content"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Consult"
+    }
+  ]
+}
+{% endschema %}

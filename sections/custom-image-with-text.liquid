@@ -1,0 +1,75 @@
+{% if section.settings != blank %}
+  <div class="custom_featured-product--wrapper custom-section-structure custom-img-with-text-wrapper">
+    {% if section.settings.section_title %}
+      <h2 class="">{{ section.settings.section_title }}</h2>
+    {% endif %}
+    {% if section.blocks != blank %}
+      {% for item in section.blocks %}
+        <div class="custom-img-width-text-block {% if item.settings.on_right %} custom-img-text-right {% endif %}%}">
+          <div class="custom-img-text-media">
+            <img src="{{item.settings.image |  image_url: width: 1000}}" width="" height="" alt="">
+          </div>
+          <div class="custom-img-text_text">
+            {% if section.settings.show_num %}
+              <span>{{ forloop.index }}</span>
+            {% endif %}
+            <h3>{{ item.settings.title }}</h3>
+            <p>{{ item.settings.description }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Custom Image with Text",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Section Title"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_num",
+      "label": "Show Number",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_with_text_block",
+      "name": "Image with text block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description"
+        },
+        {
+          "type": "checkbox",
+          "id": "on_right",
+          "label": "Image position is right"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Image with Text"
+    }
+  ]
+}
+{% endschema %}

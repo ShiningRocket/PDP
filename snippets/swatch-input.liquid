@@ -50,31 +50,3 @@
   {% render 'swatch', swatch: swatch, shape: shape %}
   {{ help_text }}
 </label>
-
-
-<script>
-  document.querySelectorAll('.swatch-input__input').forEach(input => {
-  input.addEventListener('change', function() {
-    document.querySelectorAll('.swatch-input__label').forEach(label => {
-      label.classList.remove('active');
-    });
-    this.nextElementSibling.classList.add('active');
-    
-    const colorValue = this.value;
-
-     const featuredImages = document.querySelectorAll('.featured_image img');
-      featuredImages.forEach(img => {
-        img.style.border = 'none';
-        img.classList.remove('highlight-border');
-      });
-
-      // Add border to all featured images with the clicked color
-      featuredImages.forEach(img => {
-        img.style.border = `8px solid ${colorValue}`;
-        img.classList.add('highlight-border');
-      });
-    });
-  });
-
-</script>
-

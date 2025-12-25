@@ -1,5 +1,5 @@
 {% comment %}
-  Renders product variant-picker with Anti-Glare checkbox integration
+  Renders product variant-picker
 
   Accepts:
   - product: {Object} product object.
@@ -8,104 +8,6 @@
   Usage:
   {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
-
-{%- style -%}
-.swatch[value*="Anti-Glare"], 
-.swatch[value*="Anti-Glare"] + label,
-input[value*="Anti-Glare"] + label {
-  display: none !important;
-}
-
-select option[value*="Anti-Glare"] {
-  display: none !important;
-}
-
-/* Anti-glare upgrade section */
-.anti-glare-upgrade {
-  margin: 20px 0;
-  padding: 15px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background: #fafafa;
-}
-
-.anti-glare-upgrade h4 {
-  margin: 0 0 12px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #333;
-}
-
-/* Circle checkbox styles */
-.anti-glare-checkbox {
-  margin: 8px 0;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  transition: all 0.2s ease;
-  background: white;
-}
-
-.anti-glare-checkbox input[type="checkbox"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.circle-checkbox {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  margin-right: 10px;
-  position: relative;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-  display: inline-block;
-}
-
-.anti-glare-checkbox input[type="checkbox"]:checked + label .circle-checkbox {
-  border-color: #000;
-  background-color: #000;
-}
-
-.anti-glare-checkbox input[type="checkbox"]:checked + label .circle-checkbox::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.anti-glare-checkbox label {
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.checkbox-text {
-  flex-grow: 1;
-}
-
-.anti-glare-checkbox:hover {
-  background-color: #f5f5f5;
-}
-
-/* Color display when anti-glare is selected */
-.color-with-anti-glare {
-  font-weight: 600;
-}
-{%- endstyle -%}
-
 {%- unless product.has_only_default_variant -%}
   <variant-selects
     id="variant-selects-{{ section.id }}"
@@ -126,10 +28,10 @@ select option[value*="Anti-Glare"] {
         endif
       -%}
       {%- if picker_type == 'swatch' -%}
-        <fieldset class="js product-form__input product-form__input--swatch color-selector-fieldset">
+        <fieldset class="js product-form__input product-form__input--swatch">
           <legend class="form__label">
             {{ option.name }}:
-            <span id="selected-color-display-{{ section.id }}" class="selected-color-display" data-selected-value>
+            <span data-selected-value>
               {{- option.selected_value -}}
             </span>
           </legend>
@@ -166,10 +68,9 @@ select option[value*="Anti-Glare"] {
             {%- endif -%}
             <select
               id="Option-{{ section.id }}-{{ forloop.index0 }}"
-              class="select__select color-select-dropdown"
+              class="select__select"
               name="options[{{ option.name | escape }}]"
               form="{{ product_form_id }}"
-              data-option-index="{{ forloop.index0 }}"
             >
               {% render 'product-variant-options',
                 product: product,
@@ -186,241 +87,8 @@ select option[value*="Anti-Glare"] {
       {%- endif -%}
     {%- endfor -%}
 
-    {% comment %} ========== ANTI-GLARE CHECKBOX SECTION ========== {% endcomment %}
-    <div class="anti-glare-upgrade" id="anti-glare-upgrade-{{ section.id }}">
-      <h4>Add Anti-Glare Coating</h4>
-      
-      {% assign anti_products = shop.metaobjects.anti_glare.values %}
-      
-      {% for anti_product in anti_products %}
-        {% assign price_in_cents = anti_product.price 
-          | split: '"amount":"' | last 
-          | split: '"' | first 
-          | times: 100 %}
-        {% assign formatted_price = price_in_cents | money %}
-        
-        <div class="anti-glare-checkbox">
-          <input
-            type="checkbox"
-            id="anti-glare-checkbox-{{ section.id }}"
-            name="anti-glare-option"
-            value="{{ price_in_cents }}"
-            data-title="{{ anti_product.title }}"
-            class="anti-glare-toggle"
-            data-section-id="{{ section.id }}"
-            {% if product.selected_or_first_available_variant.title contains 'Anti-Glare' %}checked{% endif %}
-          >
-          <label for="anti-glare-checkbox-{{ section.id }}">
-            <span class="circle-checkbox"></span>
-            <span class="checkbox-text">
-              {{ anti_product.title }} (+{{ formatted_price }})
-            </span>
-          </label>
-        </div>
-      {% endfor %}
-    </div>
-
-    <script type="application/json" id="variants-data-{{ section.id }}" data-selected-variant>
+    <script type="application/json" data-selected-variant>
       {{ product.selected_or_first_available_variant | json }}
     </script>
-    
-    {% comment %} Hidden field to store the final variant ID {% endcomment %}
-    <input type="hidden" name="id" id="final-variant-id-{{ section.id }}" value="{{ product.selected_or_first_available_variant.id }}">
-    
   </variant-selects>
 {%- endunless -%}
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  class VariantManager {
-    constructor(sectionId) {
-      this.sectionId = sectionId;
-      this.init();
-    }
-    
-    init() {
-      // Get elements for this specific section
-      this.colorDisplay = document.getElementById(`selected-color-display-${this.sectionId}`);
-      this.antiGlareCheckbox = document.getElementById(`anti-glare-checkbox-${this.sectionId}`);
-      this.variantIdInput = document.getElementById(`final-variant-id-${this.sectionId}`);
-      this.variantDataElement = document.getElementById(`variants-data-${this.sectionId}`);
-      this.colorDropdown = document.querySelector(`#variant-selects-${this.sectionId} .color-select-dropdown`);
-      this.colorRadios = document.querySelectorAll(`#variant-selects-${this.sectionId} input[name^="Color"], #variant-selects-${this.sectionId} input[name^="color"]`);
-      
-      // Parse variants data
-      if (this.variantDataElement) {
-        this.variants = JSON.parse(this.variantDataElement.textContent).product.variants || [];
-      } else {
-        this.variants = [];
-      }
-      
-      // State
-      this.selectedBaseColor = '';
-      this.isAntiGlare = false;
-      this.currentVariantId = '';
-      
-      this.setupEventListeners();
-      this.initializeState();
-    }
-    
-    setupEventListeners() {
-      // Listen to color dropdown changes
-      if (this.colorDropdown) {
-        this.colorDropdown.addEventListener('change', (e) => this.handleColorChange(e.target.value));
-      }
-      
-      // Listen to radio button changes (for swatches)
-      this.colorRadios.forEach(radio => {
-        radio.addEventListener('change', (e) => this.handleColorChange(e.target.value));
-      });
-      
-      // Listen to anti-glare checkbox changes
-      if (this.antiGlareCheckbox) {
-        this.antiGlareCheckbox.addEventListener('change', (e) => {
-          this.isAntiGlare = e.target.checked;
-          this.updateSelection();
-        });
-      }
-    }
-    
-    initializeState() {
-      // Get initial selected color
-      let initialColor = '';
-      
-      if (this.colorDropdown && this.colorDropdown.value) {
-        initialColor = this.colorDropdown.value;
-      } else if (this.colorRadios.length > 0) {
-        const checkedRadio = Array.from(this.colorRadios).find(radio => radio.checked);
-        if (checkedRadio) {
-          initialColor = checkedRadio.value;
-        }
-      }
-      
-      // Set initial state
-      this.selectedBaseColor = initialColor.replace(' Anti-Glare', '');
-      this.isAntiGlare = initialColor.includes('Anti-Glare');
-      
-      // Update checkbox state
-      if (this.antiGlareCheckbox) {
-        this.antiGlareCheckbox.checked = this.isAntiGlare;
-      }
-      
-      // Update display
-      this.updateDisplay();
-    }
-    
-    handleColorChange(colorValue) {
-      this.selectedBaseColor = colorValue.replace(' Anti-Glare', '');
-      this.isAntiGlare = colorValue.includes('Anti-Glare');
-      
-      // Sync checkbox
-      if (this.antiGlareCheckbox) {
-        this.antiGlareCheckbox.checked = this.isAntiGlare;
-      }
-      
-      this.updateSelection();
-    }
-    
-    updateSelection() {
-      // 1. Update display
-      this.updateDisplay();
-      
-      // 2. Find matching variant
-      this.findAndSetVariant();
-      
-      // 3. Update hidden input
-      this.updateVariantInput();
-    }
-    
-    updateDisplay() {
-      if (!this.colorDisplay) return;
-      
-      const displayText = this.isAntiGlare ? 
-        `${this.selectedBaseColor} Anti-Glare` : 
-        this.selectedBaseColor;
-      
-      this.colorDisplay.textContent = displayText;
-      
-      // Add visual class when anti-glare is selected
-      if (this.isAntiGlare) {
-        this.colorDisplay.classList.add('color-with-anti-glare');
-      } else {
-        this.colorDisplay.classList.remove('color-with-anti-glare');
-      }
-    }
-    
-    findAndSetVariant() {
-      const targetVariantName = this.isAntiGlare ? 
-        `${this.selectedBaseColor} Anti-Glare` : 
-        this.selectedBaseColor;
-      
-      // Find variant that matches
-      const matchedVariant = this.variants.find(variant => {
-        const variantColor = variant.option1 || variant.options[0];
-        return variantColor === targetVariantName && variant.available;
-      });
-      
-      if (matchedVariant) {
-        this.currentVariantId = matchedVariant.id;
-      } else {
-        // Fallback to base color if anti-glare not available
-        if (this.isAntiGlare) {
-          const baseVariant = this.variants.find(variant => {
-            const variantColor = variant.option1 || variant.options[0];
-            return variantColor === this.selectedBaseColor && variant.available;
-          });
-          
-          if (baseVariant) {
-            this.currentVariantId = baseVariant.id;
-            this.isAntiGlare = false;
-            if (this.antiGlareCheckbox) {
-              this.antiGlareCheckbox.checked = false;
-            }
-            this.updateDisplay();
-          }
-        }
-      }
-    }
-    
-    updateVariantInput() {
-      if (this.variantIdInput && this.currentVariantId) {
-        this.variantIdInput.value = this.currentVariantId;
-      }
-    }
-    
-    // Public method to get current variant ID
-    getCurrentVariantId() {
-      return this.currentVariantId;
-    }
-  }
-  
-  // Initialize VariantManager for each variant-selects section
-  const variantSelects = document.querySelectorAll('variant-selects[data-section]');
-  const variantManagers = {};
-  
-  variantSelects.forEach(select => {
-    const sectionId = select.dataset.section;
-    variantManagers[sectionId] = new VariantManager(sectionId);
-  });
-  
-  // Update product form submission to use the correct variant
-  document.addEventListener('submit', function(e) {
-    const productForm = e.target.closest('form[action*="/cart/add"]');
-    if (!productForm) return;
-    
-    // Find the variant manager for this form
-    const variantSelectsInForm = productForm.querySelector('variant-selects[data-section]');
-    if (!variantSelectsInForm) return;
-    
-    const sectionId = variantSelectsInForm.dataset.section;
-    const variantManager = variantManagers[sectionId];
-    
-    if (variantManager) {
-      const variantIdInput = productForm.querySelector('input[name="id"]');
-      if (variantIdInput) {
-        variantIdInput.value = variantManager.getCurrentVariantId() || variantIdInput.value;
-      }
-    }
-  });
-});
-</script>

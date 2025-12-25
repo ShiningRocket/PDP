@@ -1,0 +1,855 @@
+{% comment %}
+  Section: Product Positano Triptych
+  Description: Custom product detail page with framing options
+{% endcomment %}
+
+{{ 'component-product.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{%- assign product = section.settings.product -%}
+{%- if product -%}
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  {%- assign featured_image = current_variant.featured_image | default: product.featured_image -%}
+{%- endif -%}
+
+<div class="product-triptych-section page-width">
+  {% if product %}
+    <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.gallery_layout }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
+      
+      <!-- Product Media -->
+      <div class="grid__item product__media-wrapper">
+        {% if product.media.size > 0 %}
+          <div class="product__media-list">
+            {% for media in product.media %}
+              <div class="product__media-item" data-media-id="{{ section.id }}-{{ media.id }}">
+                {% render 'product-media', media: media, position: forloop.index, loop: section.settings.enable_video_looping %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="product__media-item">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Information -->
+      <div class="product__info-wrapper grid__item">
+        <div id="ProductInfo-{{ section.id }}" class="product__info-container">
+          {%- assign product_form_id = 'product-form-' | append: section.id -%}
+
+          <!-- Title -->
+          <h1 class="product__title">
+            {{ product.title | escape }}
+          </h1>
+
+          <!-- Subtitle -->
+          {% if section.settings.show_subtitle %}
+            <div class="product__subtitle">
+              {{ section.settings.subtitle_text }}
+            </div>
+          {% endif %}
+
+          <!-- Price -->
+          <div class="no-js-hidden" id="price-{{ section.id }}">
+            {%- render 'price', product: product, use_variant: true, show_badges: true, price_class: 'price--large' -%}
+          </div>
+
+          <!-- Frame Style Options -->
+          <div class="product__frame-options">
+            <h3 class="h5">{{ section.settings.frame_title }}</h3>
+            
+            <div class="frame-option-group">
+              {% for i in (1..3) %}
+                {% assign frame_title = 'frame_title_' | append: i %}
+                {% assign frame_desc = 'frame_desc_' | append: i %}
+                
+                {% if section.settings[frame_title] != blank %}
+                  <div class="frame-option">
+                    <input type="radio" 
+                           id="frame-{{ i }}-{{ section.id }}" 
+                           name="frame-style-{{ section.id }}" 
+                           value="{{ section.settings[frame_title] }}"
+                           form="{{ product_form_id }}"
+                           {% if forloop.first %}checked{% endif %}>
+                    <label for="frame-{{ i }}-{{ section.id }}">
+                      <strong>{{ section.settings[frame_title] }}</strong>
+                      {% if section.settings[frame_desc] != blank %}
+                        <span class="frame-description">{{ section.settings[frame_desc] }}</span>
+                      {% endif %}
+                    </label>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Frame Color -->
+          {% if section.settings.show_frame_color %}
+            <div class="product__frame-color">
+              <h3 class="h5">{{ section.settings.frame_color_title }}: <span id="frame-color-text-{{ section.id }}">{{ section.settings.default_color }}</span></h3>
+              <div class="frame-color-options">
+                {% assign colors = section.settings.color_options | split: ',' %}
+                {% for color in colors %}
+                  {% assign trimmed_color = color | strip %}
+                  {% if trimmed_color != blank %}
+                    <div class="color-option {% if trimmed_color == section.settings.default_color %}active{% endif %}" 
+                         data-color="{{ trimmed_color }}"
+                         style="background-color: 
+                         {% case trimmed_color %}
+                           {% when 'Natural' %}#f5e7d3
+                           {% when 'Black' %}#000
+                           {% when 'White' %}#fff
+                           {% when 'Walnut' %}#773f1a
+                           {% else %}#f5e7d3
+                         {% endcase %};">
+                      <input type="radio" 
+                             name="frame-color-{{ section.id }}" 
+                             value="{{ trimmed_color }}" 
+                             id="color-{{ trimmed_color | handle }}-{{ section.id }}"
+                             form="{{ product_form_id }}"
+                             {% if trimmed_color == section.settings.default_color %}checked{% endif %}>
+                      <span class="color-tooltip">{{ trimmed_color }}</span>
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+
+          <!-- Anti-Glass Option -->
+          {% if section.settings.show_anti_glass %}
+            <div class="product__anti-glass">
+              <label class="checkbox-label">
+                <input type="checkbox" 
+                       name="properties[Anti-Glass]" 
+                       value="Yes" 
+                       id="anti-glass-{{ section.id }}"
+                       form="{{ product_form_id }}"
+                       data-price="{{ section.settings.anti_glass_price }}">
+                <span class="checkmark"></span>
+                <span class="checkbox-text">
+                  {{ section.settings.anti_glass_text }} + <span class="price-addition">${{ section.settings.anti_glass_price | divided_by: 100.0 }}</span>
+                </span>
+              </label>
+            </div>
+          {% endif %}
+
+          <!-- Product Variants -->
+          {%- unless product.has_only_default_variant -%}
+            <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}" data-update-url="false">
+              {%- for option in product.options_with_values -%}
+                <div class="product-form__input product-form__input--dropdown">
+                  <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+                    {{ option.name }}
+                  </label>
+                  <div class="select">
+                    <select id="Option-{{ section.id }}-{{ forloop.index0 }}"
+                            class="select__select"
+                            name="options[{{ option.name | escape }}]"
+                            form="{{ product_form_id }}"
+                    >
+                      {%- for value in option.values -%}
+                        <option value="{{ value | escape }}"
+                                {% if option.selected_value == value %}selected="selected"{% endif %}>
+                          {{ value }}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+                    {% render 'icon-caret' %}
+                  </div>
+                </div>
+              {%- endfor -%}
+
+              <script type="application/json">
+                {{ product.variants | json }}
+              </script>
+            </variant-selects>
+          {%- endunless -%}
+
+          <!-- Product Form -->
+          <product-form class="product-form">
+            {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+              <input type="hidden" name="id" value="{{ current_variant.id }}" disabled>
+              
+              <!-- Hidden inputs for custom options -->
+              <input type="hidden" name="properties[Frame Style]" id="frame-style-input-{{ section.id }}" value="{{ section.settings.frame_title_1 }}">
+              <input type="hidden" name="properties[Frame Color]" id="frame-color-input-{{ section.id }}" value="{{ section.settings.default_color }}">
+              <input type="hidden" name="properties[Anti-Glass]" id="anti-glass-input-{{ section.id }}" value="No">
+
+              <!-- Quantity -->
+              <div class="product-form__input product-form__quantity">
+                <label class="form__label" for="Quantity-{{ section.id }}">
+                  {{ 'products.product.quantity.label' | t }}
+                </label>
+                <quantity-input class="quantity">
+                  <button class="quantity__button no-js-hidden" name="minus" type="button">
+                    <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}</span>
+                    {% render 'icon-minus' %}
+                  </button>
+                  <input class="quantity__input"
+                         type="number"
+                         name="quantity"
+                         id="Quantity-{{ section.id }}"
+                         min="1"
+                         value="1"
+                         form="{{ product_form_id }}"
+                  >
+                  <button class="quantity__button no-js-hidden" name="plus" type="button">
+                    <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: product.title | escape }}</span>
+                    {% render 'icon-plus' %}
+                  </button>
+                </quantity-input>
+              </div>
+
+              <!-- Add to Cart -->
+              <div class="product-form__buttons">
+                <button type="submit" name="add" class="product-form__submit button button--full-width button--primary"
+                        {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}>
+                  <span>
+                    {%- if product.selected_or_first_available_variant.available -%}
+                      {{ 'products.product.add_to_cart' | t }}
+                    {%- else -%}
+                      {{ 'products.product.sold_out' | t }}
+                    {%- endif -%}
+                  </span>
+                  <div class="loading-overlay__spinner hidden">
+                    {% render 'icon-loading' %}
+                  </div>
+                </button>
+              </div>
+            {%- endform -%}
+          </product-form>
+
+          <!-- Product Description -->
+          <div class="product__description rte">
+            <h3>{{ section.settings.art_title }}</h3>
+            {% if product.description != blank %}
+              {{ product.description }}
+            {% else %}
+              {{ section.settings.default_description }}
+            {% endif %}
+          </div>
+
+          <!-- Additional Information -->
+          <div class="product__additional-info">
+            {% if section.settings.show_sizing %}
+              <div class="info-section">
+                <h3>{{ section.settings.sizing_title }}</h3>
+                <p>{{ section.settings.sizing_text }}</p>
+              </div>
+            {% endif %}
+            
+            {% if section.settings.show_shipping %}
+              <div class="info-section">
+                <h3>{{ section.settings.shipping_title }}</h3>
+                <p>{{ section.settings.shipping_text }}</p>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Related Products Button -->
+          {% if section.settings.show_related_button %}
+            <div class="product__related">
+              <h3>{{ section.settings.related_title }}</h3>
+              <a href="{{ section.settings.related_link }}" class="button button--secondary">
+                {{ section.settings.related_button_text }}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="product-placeholder">
+      <h2>Select a product in the section settings</h2>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .product-triptych-section {
+    padding: 3rem 0;
+  }
+
+  .product__subtitle {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+
+  .product__frame-options {
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid #e1e1e1;
+    border-bottom: 1px solid #e1e1e1;
+  }
+
+  .frame-option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .frame-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .frame-option input[type="radio"] {
+    margin-top: 0.25rem;
+    accent-color: #000;
+  }
+
+  .frame-option label {
+    cursor: pointer;
+    font-size: 0.95rem;
+    flex: 1;
+  }
+
+  .frame-description {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.25rem;
+  }
+
+  .product__frame-color {
+    margin: 1.5rem 0;
+  }
+
+  .frame-color-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .color-option {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    transition: transform 0.2s ease;
+  }
+
+  .color-option:hover {
+    transform: scale(1.1);
+  }
+
+  .color-option.active {
+    border-color: #000;
+    transform: scale(1.1);
+  }
+
+  .color-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .color-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    margin-bottom: 5px;
+  }
+
+  .color-option:hover .color-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .product__anti-glass {
+    margin: 1.5rem 0;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    display: none;
+  }
+
+  .checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #000;
+    border-radius: 3px;
+    position: relative;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease;
+  }
+
+  .checkbox-label input:checked + .checkmark {
+    background-color: #000;
+  }
+
+  .checkbox-label input:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .price-addition {
+    font-weight: bold;
+  }
+
+  .product__additional-info {
+    margin: 2rem 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .info-section h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .product__related {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e1e1e1;
+  }
+
+  .product__related h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .product-placeholder {
+    text-align: center;
+    padding: 4rem 0;
+    background: #f5f5f5;
+    border-radius: 8px;
+  }
+
+  @media (max-width: 749px) {
+    .product__media-wrapper {
+      margin-bottom: 2rem;
+    }
+    
+    .frame-option-group {
+      gap: 0.75rem;
+    }
+    
+    .frame-color-options {
+      gap: 0.75rem;
+    }
+    
+    .color-option {
+      width: 35px;
+      height: 35px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize for each section on the page
+    document.querySelectorAll('.product-triptych-section').forEach(section => {
+      const sectionId = section.querySelector('[id^="ProductInfo-"]')?.id.replace('ProductInfo-', '');
+      if (!sectionId) return;
+      
+      const productForm = document.getElementById('product-form-' + sectionId);
+      const frameStyleInput = document.getElementById('frame-style-input-' + sectionId);
+      const frameColorInput = document.getElementById('frame-color-input-' + sectionId);
+      const frameColorText = document.getElementById('frame-color-text-' + sectionId);
+      const antiGlassInput = document.getElementById('anti-glass-input-' + sectionId);
+      
+      // Handle frame style selection
+      section.querySelectorAll('input[name="frame-style-' + sectionId + '"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+          if (frameStyleInput) {
+            frameStyleInput.value = this.value;
+          }
+        });
+      });
+      
+      // Handle frame color selection
+      section.querySelectorAll('.color-option').forEach(colorOption => {
+        colorOption.addEventListener('click', function() {
+          // Remove active class from all in this section
+          section.querySelectorAll('.color-option').forEach(opt => {
+            opt.classList.remove('active');
+          });
+          
+          // Add active class to clicked
+          this.classList.add('active');
+          
+          const color = this.dataset.color;
+          if (frameColorInput) {
+            frameColorInput.value = color;
+          }
+          if (frameColorText) {
+            frameColorText.textContent = color;
+          }
+        });
+      });
+      
+      // Handle anti-glass checkbox
+      const antiGlassCheckbox = document.getElementById('anti-glass-' + sectionId);
+      if (antiGlassCheckbox && antiGlassInput) {
+        antiGlassCheckbox.addEventListener('change', function() {
+          antiGlassInput.value = this.checked ? 'Yes' : 'No';
+        });
+      }
+    });
+    
+    // Variant change handler
+    document.querySelectorAll('variant-selects').forEach(variantSelects => {
+      variantSelects.addEventListener('change', function() {
+        const sectionId = this.dataset.section;
+        const form = document.getElementById('product-form-' + sectionId);
+        const variantIdInput = form.querySelector('input[name="id"]');
+        
+        // Find selected variant
+        const formData = new FormData(form);
+        const selectedOptions = [];
+        
+        form.querySelectorAll('select[name^="options"]').forEach(select => {
+          selectedOptions.push(select.value);
+        });
+        
+        // Get variant data
+        const variantsData = JSON.parse(this.querySelector('script[type="application/json"]').textContent);
+        const selectedVariant = variantsData.find(variant => {
+          return variant.options.every((option, index) => {
+            return option === selectedOptions[index];
+          });
+        });
+        
+        if (selectedVariant && variantIdInput) {
+          variantIdInput.value = selectedVariant.id;
+          variantIdInput.disabled = false;
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Product Positano Triptych",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Select Product"
+    },
+    {
+      "type": "header",
+      "content": "Product Subtitle"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle",
+      "label": "Show subtitle",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subtitle_text",
+      "label": "Subtitle text",
+      "default": "ASK OFF ALL PHOTOGRAPHY"
+    },
+    {
+      "type": "header",
+      "content": "Frame Options"
+    },
+    {
+      "type": "text",
+      "id": "frame_title",
+      "label": "Frame section title",
+      "default": "FRAME STYLE"
+    },
+    {
+      "type": "text",
+      "id": "frame_title_1",
+      "label": "Frame option 1 title",
+      "default": "VIGNETTE ARCHIVAL"
+    },
+    {
+      "type": "text",
+      "id": "frame_desc_1",
+      "label": "Frame option 1 description",
+      "default": "Clean, museum-style presentation"
+    },
+    {
+      "type": "text",
+      "id": "frame_title_2",
+      "label": "Frame option 2 title",
+      "default": "SHADOW BOX"
+    },
+    {
+      "type": "text",
+      "id": "frame_desc_2",
+      "label": "Frame option 2 description",
+      "default": "Modern look without mat"
+    },
+    {
+      "type": "text",
+      "id": "frame_title_3",
+      "label": "Frame option 3 title",
+      "default": "No Frame Print Only"
+    },
+    {
+      "type": "text",
+      "id": "frame_desc_3",
+      "label": "Frame option 3 description",
+      "default": " "
+    },
+    {
+      "type": "header",
+      "content": "Frame Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_frame_color",
+      "label": "Show frame color options",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "frame_color_title",
+      "label": "Frame color title",
+      "default": "FRAME COLOR"
+    },
+    {
+      "type": "text",
+      "id": "color_options",
+      "label": "Color options (comma separated)",
+      "default": "Natural, Black, White, Walnut",
+      "info": "Enter colors separated by commas"
+    },
+    {
+      "type": "text",
+      "id": "default_color",
+      "label": "Default color",
+      "default": "Natural"
+    },
+    {
+      "type": "header",
+      "content": "Anti-Glass Option"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_anti_glass",
+      "label": "Show anti-glass option",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "anti_glass_text",
+      "label": "Anti-glass text",
+      "default": "Add Anti-Glass ideal for bright rooms"
+    },
+    {
+      "type": "number",
+      "id": "anti_glass_price",
+      "label": "Anti-glass price in cents",
+      "default": 750,
+      "info": "Enter price in cents (e.g., 750 for $7.50)"
+    },
+    {
+      "type": "header",
+      "content": "Art Description"
+    },
+    {
+      "type": "text",
+      "id": "art_title",
+      "label": "Art section title",
+      "default": "ABOUT THE ART"
+    },
+    {
+      "type": "richtext",
+      "id": "default_description",
+      "label": "Default description",
+      "default": "<p>The iconic beach view of POSITANO TRIPTYCH will transport you to the beloved Italian town in this timeless image from Gray's La Dolce Vita series.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Additional Information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sizing",
+      "label": "Show sizing information",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "sizing_title",
+      "label": "Sizing title",
+      "default": "SIZING"
+    },
+    {
+      "type": "text",
+      "id": "sizing_text",
+      "label": "Sizing text",
+      "default": "Medium #1 X 337 (X3) - Ships within 5 business days"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping",
+      "label": "Show shipping information",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_title",
+      "label": "Shipping title",
+      "default": "SHIPPING"
+    },
+    {
+      "type": "text",
+      "id": "shipping_text",
+      "label": "Shipping text",
+      "default": "Free shipping on all orders. Ships within 5 business days."
+    },
+    {
+      "type": "header",
+      "content": "Related Products"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_related_button",
+      "label": "Show related products button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "related_title",
+      "label": "Related section title",
+      "default": "More For Italy Lovers"
+    },
+    {
+      "type": "url",
+      "id": "related_link",
+      "label": "Related products link",
+      "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "related_button_text",
+      "label": "Button text",
+      "default": "SHOP PRODUCTS"
+    },
+    {
+      "type": "header",
+      "content": "Media Settings"
+    },
+    {
+      "type": "select",
+      "id": "media_size",
+      "label": "Media size",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "select",
+      "id": "gallery_layout",
+      "label": "Gallery layout",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "thumbnail",
+          "label": "Thumbnail"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_video_looping",
+      "label": "Enable video looping",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Positano Triptych",
+      "settings": {
+        "show_subtitle": true,
+        "subtitle_text": "ASK OFF ALL PHOTOGRAPHY",
+        "frame_title": "FRAME STYLE",
+        "frame_title_1": "VIGNETTE ARCHIVAL",
+        "frame_desc_1": "Clean, museum-style presentation",
+        "frame_title_2": "SHADOW BOX",
+        "frame_desc_2": "Modern look without mat",
+        "frame_title_3": "No Frame Print Only",
+        "frame_desc_3": " ",
+        "show_frame_color": true,
+        "frame_color_title": "FRAME COLOR",
+        "color_options": "Natural, Black, White, Walnut",
+        "default_color": "Natural",
+        "show_anti_glass": true,
+        "anti_glass_text": "Add Anti-Glass ideal for bright rooms",
+        "anti_glass_price": 750,
+        "art_title": "ABOUT THE ART",
+        "default_description": "<p>The iconic beach view of POSITANO TRIPTYCH will transport you to the beloved Italian town in this timeless image from Gray's La Dolce Vita series.</p>",
+        "show_sizing": true,
+        "sizing_title": "SIZING",
+        "sizing_text": "Medium #1 X 337 (X3) - Ships within 5 business days",
+        "show_shipping": true,
+        "shipping_title": "SHIPPING",
+        "shipping_text": "Free shipping on all orders. Ships within 5 business days.",
+        "show_related_button": true,
+        "related_title": "More For Italy Lovers",
+        "related_link": "/collections/all",
+        "related_button_text": "SHOP PRODUCTS",
+        "media_size": "large",
+        "gallery_layout": "stacked",
+        "enable_video_looping": false
+      }
+    }
+  ]
+}
+{% endschema %}

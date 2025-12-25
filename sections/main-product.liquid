@@ -74,8 +74,8 @@
 
   {% assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src' %}
   <div class="page-width">
-    <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %}">
-      <div class="grid__item product__media-wrapper">
+    <div class="product product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} product--{{ section.settings.gallery_layout }} product--mobile-{{ section.settings.mobile_thumbnails }} grid grid--1-col {% if product.media.size > 0 %}grid--2-col-tablet{% else %}product--no-media{% endif %} products-wrapper">
+      <div class="grid__item product__media-wrapper product_media-contanier">
         {% render 'product-media-gallery', variant_images: variant_images %}
       </div>
       <div class="product__info-wrapper grid__item{% if settings.page_width > 1400 and section.settings.media_size == "small" %} product__info-wrapper--extra-padding{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
@@ -89,14 +89,14 @@
             {%- case block.type -%}
               {%- when '@app' -%}
                 {% render block %}
-              {%- when 'text' -%}
-                <p
-                  class="product__text inline-richtext{% if block.settings.text_style == 'uppercase' %} caption-with-letter-spacing{% elsif block.settings.text_style == 'subtitle' %} subtitle{% endif %}"
-                  {{ block.shopify_attributes }}
-                >
-                  {{- block.settings.text -}}
-                </p>
+
               {%- when 'title' -%}
+                <div class="custom-product-availble-text">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M3.40234 11.9166C2.92969 11.9166 2.58398 11.8072 2.36523 11.5884C2.15039 11.3697 2.04297 11.0259 2.04297 10.5572V9.19781C2.04297 9.07281 2 8.96735 1.91406 8.88141L0.953125 7.91461C0.621094 7.58258 0.455078 7.26422 0.455078 6.95953C0.455078 6.65485 0.621094 6.33453 0.953125 5.9986L1.91406 5.03766C2 4.94781 2.04297 4.84235 2.04297 4.72125V3.35602C2.04297 2.88336 2.15039 2.53961 2.36523 2.32477C2.58398 2.10602 2.92969 1.99664 3.40234 1.99664H4.75586C4.88477 1.99664 4.99219 1.95563 5.07812 1.8736L6.03906 0.912659C6.37109 0.576721 6.68945 0.408752 6.99414 0.408752C7.30273 0.408752 7.62305 0.576721 7.95508 0.912659L8.91602 1.8736C9.00586 1.95563 9.11328 1.99664 9.23828 1.99664H10.5977C11.0703 1.99664 11.4141 2.10797 11.6289 2.33063C11.8477 2.54938 11.957 2.89117 11.957 3.35602V4.72125C11.957 4.84235 12 4.94781 12.0859 5.03766L13.0469 5.9986C13.3789 6.33453 13.5449 6.65485 13.5449 6.95953C13.5449 7.26422 13.3789 7.58258 13.0469 7.91461L12.0859 8.88141C12 8.96735 11.957 9.07281 11.957 9.19781V10.5572C11.957 11.0298 11.8477 11.3736 11.6289 11.5884C11.4102 11.8072 11.0664 11.9166 10.5977 11.9166H9.23828C9.11328 11.9166 9.00586 11.9595 8.91602 12.0455L7.95508 13.0064C7.62305 13.3345 7.30273 13.4986 6.99414 13.4986C6.68945 13.5025 6.37305 13.3384 6.04492 13.0064L5.07812 12.0455C4.99219 11.9595 4.88477 11.9166 4.75586 11.9166H3.40234ZM6.36133 9.78961C6.43555 9.78961 6.50391 9.77203 6.56641 9.73688C6.62891 9.70172 6.68359 9.64899 6.73047 9.57867L9.63086 5.04352C9.6582 5.00055 9.68164 4.95367 9.70117 4.90289C9.72461 4.85211 9.73633 4.80133 9.73633 4.75055C9.73633 4.64899 9.69727 4.56696 9.61914 4.50446C9.54102 4.44196 9.45508 4.41071 9.36133 4.41071C9.23242 4.41071 9.125 4.47906 9.03906 4.61578L6.34375 8.88727L4.96094 7.18805C4.90625 7.11774 4.85156 7.06891 4.79688 7.04156C4.74609 7.01422 4.6875 7.00055 4.62109 7.00055C4.52344 7.00055 4.43945 7.03766 4.36914 7.11188C4.29883 7.1861 4.26367 7.27399 4.26367 7.37555C4.26367 7.42633 4.27344 7.47711 4.29297 7.52789C4.3125 7.57477 4.33984 7.62164 4.375 7.66852L5.96875 9.57867C6.02734 9.65289 6.08789 9.70758 6.15039 9.74274C6.21289 9.77399 6.2832 9.78961 6.36133 9.78961Z" fill="#2E5C7C"></path>
+                  </svg>
+                  <p>First Edition Avaiilable</p>
+                </div>
                 <div class="product__title" {{ block.shopify_attributes }}>
                   <h1>{{ product.title | escape }}</h1>
                   <a href="{{ product.url }}" class="product__title">
@@ -104,6 +104,9 @@
                       {{ product.title | escape }}
                     </h2>
                   </a>
+                </div>
+                <div class="custom-product-discount">
+                  {{ section.settings.custom_product_discount }}
                 </div>
               {%- when 'price' -%}
                 <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
@@ -114,11 +117,22 @@
                     price_class: 'price--large'
                   -%}
                 </div>
-                {%- if product.quantity_price_breaks_configured? -%}
-                  <div class="volume-pricing-note" id="Volume-Note-{{ section.id }}">
-                    <span>{{ 'products.product.volume_pricing.note' | t }}</span>
+
+                <div class="custom-frame-style">
+                  <h5>{{ section.settings.frame_title }}</h5>
+                  <div class="frame_kind">
+                    <span>premium archlval</span>
+                    <p>Classic, museum-style presentation</p>
                   </div>
-                {%- endif -%}
+                  <div class="custom-product-showdowbox">
+                    <div class="showdowbox-title">
+                      <span>shadow box</span>
+                      <button>new</button>
+                    </div>
+                    <p>Modern look without mat</p>
+                  </div>
+                </div>
+
                 {%- if cart.taxes_included or cart.duties_included or shop.shipping_policy.body != blank -%}
                   <div class="product__tax caption rte">
                     {%- if cart.duties_included and cart.taxes_included -%}
@@ -477,6 +491,39 @@
 
               {%- when 'variant_picker' -%}
                 {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+
+              {% when 'anti_product' %}
+                <div class="add-anti_product">
+                  {% assign anti_products = shop.metaobjects.anti_glare.values %}
+
+                  {% for anti_product in anti_products %}
+                    {% assign price_in_cents = anti_product.price
+                      | split: '"amount":"'
+                      | last
+                      | split: '"'
+                      | first
+                      | times: 100
+                    %}
+                    {% assign formatted_price = price_in_cents | money %}
+                    <div class="anti-glare-checkbox">
+                      <input
+                        type="checkbox"
+                        id="anti-glare-{{ forloop.index }}"
+                        name="anti-glare-option"
+                        value="{{ price_in_cents }}"
+                        data-product-title="{{ anti_product.title }}"
+                        class="circle-checkbox-input"
+                      >
+                      <label for="anti-glare-{{ forloop.index }}">
+                        <span class="circle-checkbox"></span>
+                        <span class="checkbox-text"> Add {{ anti_product.title }} (+{{ formatted_price }}) </span>
+                      </label>
+                    </div>
+                  {% else %}
+                    <p>No anti-product options available.</p>
+                  {% endfor %}
+                </div>
+
               {%- when 'buy_buttons' -%}
                 {%- render 'buy-buttons',
                   block: block,
@@ -906,6 +953,11 @@
           "default": "circle"
         }
       ]
+    },
+    {
+      "type": "anti_product",
+      "name": "Anti-Glare Product",
+      "settings": []
     },
     {
       "type": "buy_buttons",
@@ -2262,7 +2314,44 @@
       "unit": "px",
       "label": "t:sections.all.padding.padding_bottom",
       "default": 36
+    },
+    {
+      "type": "text",
+      "id": "custom_product_discount",
+      "label": "Product Discount"
     }
   ]
 }
 {% endschema %}
+
+<script>
+  document.querySelectorAll('.custom-product-wrapper').forEach((wrapper) => {
+    const swatches = wrapper.closest('.product').querySelectorAll('.color-swatch');
+
+    swatches.forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        wrapper.style.border = '10px solid #FFFFFF';
+
+        const color = swatch.style.backgroundColor;
+        wrapper.style.border = `10px solid ${color}`;
+      });
+    });
+  });
+</script>
+<script>
+  document.querySelectorAll('.custom-variant-color').forEach((colorContainer) => {
+    const title = colorContainer.querySelector('.variant-color-title');
+    const swatches = colorContainer.querySelectorAll('.color-swatch');
+
+    swatches.forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        const colorName = swatch.getAttribute('title');
+
+        // Display the color name after the colon
+        title.innerHTML = `<h3>frame color : ${colorName}</h3>`;
+      });
+    });
+  });
+</script>
+
+
